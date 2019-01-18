@@ -5,7 +5,7 @@ Your reports should not only explain **what** code you have run, but also demons
 
 ## General Rules
 
-You are encouraged to discuss the problems with others, but the submission <u>**must** be your own work.</u> You must acknowledge all collaborations and contributions from the instructor, TAs, fellow students, Canvas discussions, etc.
+You are encouraged to discuss the problems with others, but the submission __**must** be your own work.__ You must acknowledge all collaborations and contributions from the instructor, TAs, fellow students, Canvas discussions, etc.
 
 ## Written Communication
 
