@@ -1,3 +1,4 @@
 **.log
 **.asv
-**tex2pdf
+**tex2pdf*/
+!.gitignore

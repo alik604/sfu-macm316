@@ -4,7 +4,7 @@
 
 %  N = matrix size;  Nex = # of experiments
 N = 1*128
-Nex = 1*100;
+Nex = 10*100;
 
 %  solution of all ones
 x0 = ones(N,1);

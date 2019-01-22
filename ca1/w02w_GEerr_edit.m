@@ -2,20 +2,23 @@
 %  w02w_GEerr.m -- GE truncation error (djm -- 08 sep 2019)
 %
 
-b = 32;         %  b = growth of matrix size per loop;
-nmax = 16;      %  nmax = max value of n for n*b
-Nex = 100*100;  %  Nex = # of experiments
+C = 16;         %  C = growth of matrix size per loop;
+nmax = 64;      %  nmax = max value of n for n*C
+Nex = 10*100;  %  Nex = # of experiments
 
-%  solution of all ones
-x0 = ones(N,1);
-
-%  data vector of errors
-res_err = zeros(Nex,1);
-sol_err = zeros(Nex,1);
+%  data vector of mean residual error for NxN sized matrices
+mean_res_err = zeros(nmax,2);
 
 for n = 1:nmax
     %  N = size of matrix A
-    N = n*b;
+    N = n*C
+    
+    %  solution of all ones
+    x0 = ones(N,1);
+    
+    %  data vector of errors
+    res_err = zeros(Nex,1);
+
     for kk = 1:Nex
         %  make random matrix & b-vector
         A = eye(N,N) + randn(N,N)/sqrt(N);
@@ -23,37 +26,24 @@ for n = 1:nmax
 
         %  GE via backslash
         x1 = A \ b;
-
+        
         %  rms residual error 
-        res_err(kk) = rms(A*x1-b);
-
-        % rms solution error
-        sol_err(kk) = rms(x1-x0);
+        res_err(kk) = rms(A*x1-b); 
     end
+    
+    %  mean_res_error for matrices sized NxN
+    mean_res_err(n,1) = N;
+    mean_res_err(n,2) = mean(res_err);
 end
 
 
-%  histogram for residual error
+%  plot for mean residual error of NxN sized matrices
 figure(1);  clf
-subplot(2,1,1)
-hist(log10(res_err),20)
+subplot(1,1,1)
+scatter(log10(mean_res_err(:,1)),log10(mean_res_err(:,2)))
 
-%  mean & variance
-min_re = min(log10(res_err));
+xlabel('log_{10}N','fontsize',12)
+ylabel(['mean ?_{res}(N) from ' num2str(Nex) ' experiments per N'])
+title('log_{10}N vs. mean ?_{res}(N)','fontsize',14)
 
-string = ['mean = ' num2str(mean(log10(res_err)))]
-text(min_re,0.10*Nex,string,'fontsize',12)
-string = ['var  = ' num2str(var(log10(res_err)))]
-text(min_re,0.08*Nex,string,'fontsize',12)
 
-%  axis labels
-xlabel('log_{10} rms error','fontsize',12)
-ylabel(['number from ' num2str(Nex) ' experiments'])
-title('residual error: A x_1- b','fontsize',14)
-
-%  plot for solution error
-subplot(2,1,2)
-hist(log10(sol_err),20)
-xlabel('log_{10} rms error','fontsize',12)
-ylabel(['number from ' num2str(Nex) ' experiments'])
-title('solution error: x_1-x_0','fontsize',14)
