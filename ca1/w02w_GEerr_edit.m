@@ -1,5 +1,5 @@
 %
-%  w02w_GEerr.m -- GE truncation error (djm -- 08 sep 2019)
+%  w02w_GEerr_edit.m -- GE truncation error (dhp -- 21 jan 2019)
 %
 
 C = 16;         %  C = growth of matrix size per loop;
