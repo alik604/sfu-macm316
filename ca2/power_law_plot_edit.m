@@ -12,46 +12,55 @@
 
 % Define x-values, chosen so that leading order beahviour 
 % dominates. 
-x = [100:200]; 
+x = [10,100,1000]; 
 
 % Leading order exponent
 % Experiment by changing this value
-lo_exp = 2; 
+lo_exp = [3,2,2]
 
 % Our power law we wish to analyze 
-y = 5/4*x.^lo_exp + x + 45; 
+avg_dense_time = [4*10^(-6), 1.68*10^(-4), 2.2462*10^(-2)]; 
+avg_tri_time = [1*10^(-6), 6*10^(-6), 4.84*10^(-3)];
+avg_perm_time = [1*10^(-6), 3.4*10^(-5), 4.550*10^(-3)];
+y = [avg_dense_time; avg_tri_time; avg_perm_time];
 
 % Compute log values
 logx = log10(x); 
 logy = log10(y);
 
-% Best fit line to log data 
-p = polyfit(logx,logy,1);
+ylabels = ["avg dense time"; "avg tri time"; "avg perm time"];
+logylabels = ["log_{10}(avg dense time)", "log_{10}(avg tri time)", ...
+                "log_{10}(avg perm time)"];
 
-% Output
-% How does the slope of the best fit compare to lo_exp?
-display(['Leading order power law is : ',num2str(lo_exp)])
-display(['Slope of best fit line is  : ',num2str(p(1))])
+for k = 1:3
+    % Best fit line to log data 
+    p = polyfit(logx,logy(k,:),1);
+    
+    % Output
+    % How does the slope of the best fit compare to lo_exp?
+    display(['Leading order power law is : ',num2str(lo_exp(k))])
+    display(['Slope of best fit line is  : ',num2str(p(1))])
+    
+    % Plotting 
+    figure(k) 
+    clf; hold on; 
 
-% Plotting 
-figure(1) 
-clf; hold on; 
-
-% Plot of raw data
-% Is it clear exactly what power law is being plotted? 
-subplot(1,2,1)
-plot(x,y,'b')
-grid on 
-xlabel('x')
-ylabel('y')
-title(['Power law with l.o. exponent of ', ...
-       num2str(lo_exp)])
-
-% Plot of log data 
-% It should be clear that this relationship is linear
-subplot(1,2,2)
-plot(logx,logy,'ro') 
-grid on 
-xlabel('log_{10}(x)')
-ylabel('log_{10}(y)')
-title(['Log-log plot, with slope ', num2str(p(1))])
+    % Plot of raw data
+    % Is it clear exactly what power law is being plotted? 
+    subplot(1,2,1)
+    plot(x,y(k,:),'b')
+    grid on 
+    xlabel('x')
+    ylabel(ylabels(k))
+    title(['Power law with l.o. exponent of ', ...
+       num2str(lo_exp(k))])
+   
+    % Plot of log data 
+    % It should be clear that this relationship is linear
+    subplot(1,2,2)
+    plot(logx,logy(k,:),'ro') 
+    grid on 
+    xlabel('log_{10}(x)')
+    ylabel(logylabels(k))
+    title(['Log-log plot, with slope ', num2str(p(1))])
+end

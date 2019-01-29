@@ -16,10 +16,10 @@
 %               complete your report. 
 
 %  experimental parameters
-N   = 10;
-dense_Nex = 300000;
-tri_Nex = 2000000;
-perm_Nex = 1200000;
+N   = 1000;
+dense_Nex = 450;
+tri_Nex = 20000;
+perm_Nex = 3000;
 
 %  three matrix types
 
