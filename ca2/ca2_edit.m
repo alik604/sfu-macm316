@@ -16,9 +16,10 @@
 %               complete your report. 
 
 %  experimental parameters
-N   = 5;
-Nex = 50;
-
+N   = 10;
+dense_Nex = 300000;
+tri_Nex = 2000000;
+perm_Nex = 1200000;
 
 %  three matrix types
 
@@ -35,7 +36,7 @@ Mp = Mt(idx,:);
 
 %Tri-diagonal and sparse tri-diagonal
 %M3 = diag(diag(Md))+diag(diag(Md,-1),-1)+diag(diag(Md,1),1);
-%M3s=sparse(Mt)
+%M3s=sparse(M3)
 
 %  exact solution of all ones
 x = ones(N,1);
@@ -47,31 +48,31 @@ bp = bt(idx);
 
 %  dense test
 tic 
-for jj = 1:Nex
+for jj = 1:dense_Nex
     xd = Md\bd;
 end
-dense_time=toc;
+dense_time=toc
 
 %  upper tri test
 tic
-for jj = 1:Nex
+for jj = 1:tri_Nex
     xt = Mt\bt;
 end
-tri_time=toc;
+tri_time=toc
 
 % permuted upper tri test  
 tic
-for jj = 1:Nex
+for jj = 1:perm_Nex
     xp = Mp\bp;
 end
-perm_tri_time=toc;
+perm_tri_time=toc
 
 %Computing avgerage solve times
-avg_tri_time = tri_time/(Nex);
+avg_dense_time = dense_time/(dense_Nex);
 
-avg_perm_time = perm_tri_time/(Nex);
+avg_tri_time = tri_time/(tri_Nex);
 
-avg_dense_time = dense_time/(Nex);
+avg_perm_time = perm_tri_time/(perm_Nex);
 
 % You may find the following code helpful for displaying the results 
 % of this demo.
