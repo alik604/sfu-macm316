@@ -15,9 +15,9 @@ tol = 1e-10;
 fzero_opt = optimset('TolX',tol);
 
 %  root-finding loop control parameters
-ds = 0.6;  
+ds = 0.01;  
 %  useful future variables
-%  itmax = 24;  delta = pi/50;
+itmax = 24;  delta = 48*pi/50;
 
 
 %  define the function HI(x,y)
@@ -42,7 +42,7 @@ xn = xi + ds*cos(th);
 yn = yi + ds*sin(th);
 
 %  make array of contour points
-Nsteps = 24;
+Nsteps = 1460;
 zero_contour = zeros(Nsteps+1,2);
 zero_contour(1,:) = [xn yn];
 
@@ -50,11 +50,41 @@ zero_contour(1,:) = [xn yn];
 for kk = 1:Nsteps
 	%  START:  theta root-finding here (you cannot use fzero here!!)
 	%
-	%  fzero for next angle, using previous angle as initial guess
-	thn = fzero(@(th) hi_th(th,xn,yn),th,fzero_opt);
+	%  Secant Method for next point
+	
+    %  0)  set two initial guesses
+    th0 = th-delta;  hi_th0 = hi_th(th0,xn,yn);
+    thn = th+delta;
+    Nevals = 1;
+    
+    check = thn-th0;
+    
+    %  root-finding loop
+    while( abs(check) > tol )
+        if Nevals > itmax
+            fprintf('no convergence:\n')
+            fprintf('\tds = %f, delta = %f\n', ds, delta)
+            break
+        end
+        %  1)  function evaluation at thn
+        hi_thn = hi_th(thn, xn,yn);
+        Nevals = Nevals + 1;
+
+        %  2)  secant update
+        thS = thn - (hi_thn * (thn - th0)/(hi_thn - hi_th0));
+
+        %  3)  prepare next iteration
+        th0 = thn;  hi_th0 = hi_thn;
+        thn = thS;
+
+        check = thn - th0;
+    end
     %
     %  END:  theta root-finding here
-     
+    if Nevals > itmax
+        break
+    end
+    
     % Compute next point on contour
 	xn = xn + ds*cos(thn);
 	yn = yn + ds*sin(thn);
