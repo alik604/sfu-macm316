@@ -1,6 +1,8 @@
 %
-%  CA3_demo.m -- djm -- 29 jan 2019
+%  CA3_SM.m -- dhp -- 29 jan 2019
 %
+
+clear
 
 %  hi function
 
@@ -15,10 +17,12 @@ tol = 1e-10;
 fzero_opt = optimset('TolX',tol);
 
 %  root-finding loop control parameters
-ds = 0.01;  
+%ds = 0.6;
+ds = 0.1;
 %  useful future variables
-itmax = 24;  delta = 48*pi/50;
-
+itmax = 24;
+%delta = pi/2;
+delta = pi/2;
 
 %  define the function HI(x,y)
 hi = @(x,y) exp(-3*((x + 0.5).^2 + 2*y.^2)) + exp(-x.^2 - 2*y.^2).*cos(4*x) - 1e-3;
@@ -42,9 +46,11 @@ xn = xi + ds*cos(th);
 yn = yi + ds*sin(th);
 
 %  make array of contour points
-Nsteps = 1460;
+Nsteps = 24000;
 zero_contour = zeros(Nsteps+1,2);
 zero_contour(1,:) = [xn yn];
+
+total_evals = 0;
 
 %  loop for the contour
 for kk = 1:Nsteps
@@ -79,6 +85,9 @@ for kk = 1:Nsteps
 
         check = thn - th0;
     end
+    
+    total_evals = total_evals + Nevals;
+    
     %
     %  END:  theta root-finding here
     if Nevals > itmax
@@ -93,6 +102,8 @@ for kk = 1:Nsteps
 	zero_contour(kk+1,:) = [xn yn];
 	th = thn;
 end	
+
+avg_evals = total_evals / kk
 
 %  colour contourplot of HI function
 figure(2);  clf

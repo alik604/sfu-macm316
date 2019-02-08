@@ -1,6 +1,8 @@
 %
-%  CA3_demo.m -- djm -- 29 jan 2019
+%  CA3_BiS.m -- dhp -- 29 jan 2019
 %
+
+clear
 
 %  hi function
 
@@ -15,10 +17,10 @@ tol = 1e-10;
 fzero_opt = optimset('TolX',tol);
 
 %  root-finding loop control parameters
-ds = 0.02;  
+ds = 0.6;  
 %  useful future variables
 %  itmax = 24;  
-delta = pi/2;
+delta = 3*pi/4;
 
 %  define the function HI(x,y)
 hi = @(x,y) exp(-3*((x + 0.5).^2 + 2*y.^2)) + exp(-x.^2 - 2*y.^2).*cos(4*x) - 1e-3;
@@ -30,17 +32,6 @@ hi_th = @(th,xn,yn) hi(xn + ds*cos(th),yn + ds*sin(th));
 %  and subtracts distance b/w point (x,y) and (x0,y0) from radius of circle
 %
 circ_rmndr = @(x,y,x0,y0) ds^2 - (x-x0)^2 - (y-y0)^2;
-
-%  colour contourplot of HI function
-figure(1);  clf
-pcolor(xx,yy,hi(xg,yg));  colorbar
-shading interp;  hold on
-contour(xx,yy,hi(xg,yg),[0 0],'w--')
-axis equal;  axis image
-
-title('trace the contour hi(x,y)=0')
-xlabel('x-axis')
-ylabel('y-axis')
 
 %  find point on the "H" with y=0
 %  initial guess for a point very NEAR contour
@@ -58,10 +49,11 @@ xn = xi + ds*cos(th);
 yn = yi + ds*sin(th);
 
 %  make array of contour points
-Nsteps = 728;
+Nsteps = 24;
 zero_contour = zeros(Nsteps+1,2);
 zero_contour(1,:) = [xn yn];
 
+Nevals = 0;
 %  loop for the contour
 for kk = 1:Nsteps
     %  START:  theta root-finding here (you cannot use fzero here!!)
@@ -73,8 +65,6 @@ for kk = 1:Nsteps
     hi_list = hi_th(th_list,xn,yn);
     sign_check = sign(hi_list);
     sign_diffs = diff(sign_check);
-    
-    fprintf('Finding th_%d\n', kk)
     
     %  plot radius of theta root-finding circle
     %  x_th = xn + ds*cos(th_list);
@@ -101,7 +91,6 @@ for kk = 1:Nsteps
                 xxi = xn + ds*cos(thi);
                 yyi = yn + ds*sin(thi);
                 
-                %{
                 %  see if root lies within radius of previous search
                 if( kk > 1 )
                     circ_dist1 = circ_rmndr(xxi,yyi,zero_contour(kk-1,1),zero_contour(kk-1,2));
@@ -116,7 +105,6 @@ for kk = 1:Nsteps
                         continue
                     end
                 end
-                %}
                 
                 % new root outside radius of past two searches: progress probably being made
                 ix = ii;
@@ -137,7 +125,7 @@ for kk = 1:Nsteps
     %  0)  set sign-change interval
     thL = th_list(ix  );  hi_thL = hi_th(thL,xn,yn);
     thR = th_list(ix+1);  hi_thR = hi_th(thL,xn,yn);
-    Nevals = 2;
+    Nevals = Nevals + 2;
 
     %  1)  compute first midpoint
     check = (thR-thL)/2;
@@ -170,7 +158,7 @@ for kk = 1:Nsteps
 
     %
     %  END:  theta root-finding here
-
+    
     % Compute next point on contour
     xn = xn + ds*cos(thn);
     yn = yn + ds*sin(thn);
@@ -179,6 +167,19 @@ for kk = 1:Nsteps
     zero_contour(kk+1,:) = [xn yn];
     th = thn;
 end	
+
+avg_evals = Nevals/Nsteps;
+
+%  colour contourplot of HI function
+figure(1);
+pcolor(xx,yy,hi(xg,yg));  colorbar
+shading interp;  hold on
+contour(xx,yy,hi(xg,yg),[0 0],'w--')
+axis equal;  axis image
+
+title('trace the contour hi(x,y)=0')
+xlabel('x-axis')
+ylabel('y-axis')
 
 %  plot the zero-contour, 1st & last point
 plot(zero_contour(:,1),zero_contour(:,2),'ro-')
