@@ -15,10 +15,10 @@ tol = 1e-10;
 fzero_opt = optimset('TolX',tol);
 
 %  root-finding loop control parameters
-ds = 1.0;  
+ds = 0.02;  
 %  useful future variables
 %  itmax = 24;  
-delta = 9*pi/10;
+delta = pi/2;
 
 %  define the function HI(x,y)
 hi = @(x,y) exp(-3*((x + 0.5).^2 + 2*y.^2)) + exp(-x.^2 - 2*y.^2).*cos(4*x) - 1e-3;
@@ -58,7 +58,7 @@ xn = xi + ds*cos(th);
 yn = yi + ds*sin(th);
 
 %  make array of contour points
-Nsteps = 5;
+Nsteps = 728;
 zero_contour = zeros(Nsteps+1,2);
 zero_contour(1,:) = [xn yn];
 
@@ -76,10 +76,10 @@ for kk = 1:Nsteps
     
     fprintf('Finding th_%d\n', kk)
     
-    %  plot circle of search
-    x_th = xn + ds*cos(th_list);
-    y_th = yn + ds*sin(th_list);
-    plot(x_th(:),y_th(:),'m--')
+    %  plot radius of theta root-finding circle
+    %  x_th = xn + ds*cos(th_list);
+    %  y_th = yn + ds*sin(th_list);
+    %  plot(x_th(:),y_th(:),'m--')
     
     %  check for any exact zeros!!
     ix = find(sign_check==0);
@@ -101,28 +101,31 @@ for kk = 1:Nsteps
                 xxi = xn + ds*cos(thi);
                 yyi = yn + ds*sin(thi);
                 
-                circ_dist1 = circ_rmndr(xxi,yyi,zero_contour(kk,1),zero_contour(kk,2));
+                %{
+                %  see if root lies within radius of previous search
                 if( kk > 1 )
-                    circ_dist2 = circ_rmndr(xxi,yyi,zero_contour(kk-1,1),zero_contour(kk-1,2));
-                end
-                
-                %  if new root is in radius of past two searches, continue
-                if( (circ_dist1 > 0) || (circ_dist1 > 1e-15) )
-                    if (kk == 1)
-                        continue;
-                    elseif (circ_dist2 > 0) || (circ_dist2 > 1e-15)
-                        continue;
+                    circ_dist1 = circ_rmndr(xxi,yyi,zero_contour(kk-1,1),zero_contour(kk-1,2));
+                    if( circ_dist1 > 1e-15 )
+                        continue
                     end
                 end
+                %  see if root lies within radius of second previous search
+                if( kk > 2 )
+                    circ_dist2 = circ_rmndr(xxi,yyi,zero_contour(kk-2,1),zero_contour(kk-2,2));
+                    if( circ_dist2 > 1e-15 )
+                        continue
+                    end
+                end
+                %}
                 
-                % new root outside of old: progress probably being made
+                % new root outside radius of past two searches: progress probably being made
                 ix = ii;
                 fwd_root = true;
                 break
             end
             
             if( fwd_root == false)
-                disp('no progress possible');
+                disp('no further progress possible');
                 break;
             else
                 thn = th_list(ix);
