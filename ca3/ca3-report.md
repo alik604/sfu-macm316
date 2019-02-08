@@ -7,10 +7,6 @@ header-includes: |
 geometry: "margin=1in"
 ---
 
-\newcommand*\textfrac[2]{
-  \frac{\text{#1}}{\text{#2}}
-}
-
 # MACM 316 — Computing Assignment #3
 David Pham // dhpham@sfu.ca // 301318482
 
