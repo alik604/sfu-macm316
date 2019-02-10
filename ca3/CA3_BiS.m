@@ -44,7 +44,7 @@ th = fzero(@(th) hi_th(th,xi,yi),th,fzero_opt);
 %
 %  END  :  FIND INITIAL POINT on contour
 
-%  compute first point ON contour
+%  compute first point ON contourasdf asdf asdf 
 xn = xi + ds*cos(th);
 yn = yi + ds*sin(th);
 
