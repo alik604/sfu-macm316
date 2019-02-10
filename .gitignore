@@ -3,3 +3,4 @@
 **tex2pdf*/
 !.gitignore
 fig*converted*.pdf
+*/draft/
