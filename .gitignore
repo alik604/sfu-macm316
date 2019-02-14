@@ -4,3 +4,4 @@
 !.gitignore
 fig*converted*.pdf
 */draft/
+*.gif

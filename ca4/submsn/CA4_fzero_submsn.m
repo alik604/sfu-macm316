@@ -61,12 +61,12 @@ for mm = 0:mP-1
     %  Find 'kP' zeros, 1 <= 'kk' <= 'kP'
     for kk = 1:kP
         
-        %  The k-th root is approx. at z_{m,k-1} + pi, where k > 1
+        %  Use "k-1"-th root + pi as left bound of initial bracket
         if kk > 1
             %  left endpoint of interval
             rL = floor(Amk(mm+1,kk-1)+pi);
             
-            %  check for sign change at J_m(rL) and J_m(rL+ii)
+            %  check for sign change between J_m(rL) and J_m(rL+ii)
             ii = [1 2];
             sign_changes = diff(sign([bfunc(rL,mm) bfunc(rL+ii,mm)]));
             iix = find(sign_changes,1);

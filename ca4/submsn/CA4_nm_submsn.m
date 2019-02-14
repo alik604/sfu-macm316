@@ -65,8 +65,7 @@ for  mm = 0:mP-1
         %  Set initial guess for k-th root, where k>1
         if  kk > 1
             %  The k-th root is approx. at z_{m,k-1} + pi
-            %zmki = Amk(mm+1,kk-1) + pi;
-            zmki = Amk(mm+1,kk-1)+pi-0.1;
+            zmki = Amk(mm+1,kk-1) + pi;
         end
         
         %  Find z_{m,k} using Newton's Method
@@ -84,7 +83,7 @@ for  mm = 0:mP-1
                     mm
                     kk
                     fprintf("Reason: NM doesn't converge after %d iterations\n", itmax)
-                    return
+                    break
                 else
                     break
                 end
